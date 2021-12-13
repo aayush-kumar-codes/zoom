@@ -6,7 +6,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 client_id = "d39KwhSYQaiR7vRsHokOPQ"
-client_secret = "EIEKw2nI1vw3JYvemerft7YPDv30zw3m"
+client_secret = "xV2ybHrvVathDeN495B1Lfc6ZwWhIUXz"
 
 def base64Encode(string):
     string_bytes = string.encode('ascii')
@@ -19,7 +19,9 @@ def home(request):
 
 
 def generate_access_token(request):
-    r = requests.post("https://zoom.us/oauth/token?grant_type=authorization_code&code=1zdngydzCT_3YN24D4qTI2pxNAgfgF6dA&redirect_uri=http://127.0.0.1:8000/zoom/callback/", 
+    json_data = json.loads(request.body)
+    code = json_data['code']
+    r = requests.post(f"https://zoom.us/oauth/token?grant_type=authorization_code&code={code}&redirect_uri=http://127.0.0.1:8000/zoom/callback/", 
     headers= {
         'Authorization': 'Basic' + base64Encode(f'{client_id}:{client_secret}')
         }
