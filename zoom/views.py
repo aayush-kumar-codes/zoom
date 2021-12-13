@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 client_id = "d39KwhSYQaiR7vRsHokOPQ"
 client_secret = "xV2ybHrvVathDeN495B1Lfc6ZwWhIUXz"
 
+redirect_uri = "http://127.0.0.1:8000/zoom/callback/"
+
 def base64Encode(string):
     string_bytes = string.encode('ascii')
     base64_bytes = base64.b64encode(string_bytes)
@@ -21,13 +23,18 @@ def home(request):
 def generate_access_token(request):
     json_data = json.loads(request.body)
     code = json_data['code']
-    r = requests.post(f"https://zoom.us/oauth/token?grant_type=authorization_code&code={code}&redirect_uri=http://127.0.0.1:8000/zoom/callback/", 
+    r = requests.post(f"https://zoom.us/oauth/token?grant_type=authorization_code&code={code}&redirect_uri={redirect_uri}", 
     headers= {
         'Authorization': 'Basic' + base64Encode(f'{client_id}:{client_secret}')
         }
     )
 
-    return JsonResponse(r.json())
+    data = r.json()
+
+    return JsonResponse({
+        "access_token": data["access_token"],
+        "expires_in": data["expires_in"]
+    })
 
 
 
